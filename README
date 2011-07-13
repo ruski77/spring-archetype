@@ -1,0 +1,25 @@
+Follow the steps below to create a Seam/JPA/Primefaces web project:
+
+1. If it exists, delete the target <project> directory with the following command:
+
+rm -r <project>
+
+2. CD to the seam-archetype directory, and run the following maven command:
+
+mvn clean install
+
+3. To create the new project (ensure current directory is <home>/workspace), run the following maven command, replacing the parameters groupId, artifactId, package, version with desired values. 
+
+mvn archetype:generate -DarchetypeRepository=/home/russell/.m2 -DarchetypeGroupId=adcowebsolutions -DarchetypeArtifactId=spring-archetype -DarchetypeVersion=1.0.0 -DgroupId=au.id.adco -DartifactId=adco -Dpackage=au.id.adco -Dversion=1.0.0
+
+4. when created successfully, cd into the new directory and run the following maven command:
+
+mvn eclipse:eclipse
+
+5. Then update the execute permissions on the deploy.sh file with the following command:
+
+chmod 777 deploy.sh
+
+6. Build the project!
+
+mvn clean package -P dev

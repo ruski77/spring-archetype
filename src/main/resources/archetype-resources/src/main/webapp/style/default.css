@@ -1,0 +1,45 @@
+@import "template.css";
+
+/* Setup defaults since variable in browsers
+----------------------------------------------- */
+body, div, dd, dt, dl, img, ul, ol, li, p, h1, h2, h3, h4, h5, form, hr, fieldset {
+	margin: 0;
+	padding: 0;
+}
+
+.errors {
+	font-size: 12px;
+	font-family:Verdana;
+	font-weight: normal;
+	text-align: center;
+	color: #FF0000;
+}
+
+.required {
+	color: #FF0000;
+}
+
+.errors div {
+	text-align: left;
+}
+
+.errors input {
+	border: 1px solid #FF0000;
+}
+
+.errors ul {
+	list-style: none;
+}
+
+#errorPage ul {
+	list-style-type: none;
+	margin-left: 0;
+	padding-left: 1em;
+	color: #cd0a0a;
+}
+
+.termHL { font-weight:bold; background-color:#FFFF00; }
+
+.current a {
+	font-weight:bold;
+}

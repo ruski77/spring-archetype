@@ -1,0 +1,118 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>${groupId}</groupId>
+    <artifactId>${artifactId}</artifactId>
+    <packaging>war</packaging>
+    <version>${version}</version>
+    <name>${artifactId}</name>
+    
+    <properties>
+		<java.version>1.6</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  	</properties>
+   
+    <dependencies>
+  
+        <dependency>
+			<groupId>adcowebsolutions</groupId>
+			<artifactId>adco-common</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+    	
+    </dependencies>
+    
+    <build>
+   
+        <plugins>
+            
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>       
+            
+            <plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-resources-plugin</artifactId>
+        		<version>2.3</version>
+        		<configuration>
+          			<encoding>${project.build.sourceEncoding}</encoding>
+        		</configuration>
+      		</plugin>     
+      		
+      		<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+       	 		<artifactId>maven-war-plugin</artifactId>
+        		<version>2.0.2</version>
+        		<configuration>
+          			<webResources>
+           				<resource>
+              				<filtering>true</filtering>
+              				<directory>src/main/webapp</directory>
+              				<includes>
+                				<include>**/*.xml</include>
+              				</includes>			
+            			</resource>
+          			</webResources>
+        		</configuration>
+      		</plugin>
+            
+        </plugins>
+        
+        <resources>
+        
+      		<resource>
+        		<directory>src/main/resources</directory>
+        		<filtering>true</filtering>
+      		</resource>
+      		
+    	</resources>
+        
+    </build>
+    
+    <profiles>
+    
+  		<profile>
+    		<id>dev</id>
+    		<build>
+        		<finalName>${artifactId}</finalName>
+      		</build>
+    		<properties>
+        		<hibernate.show.sql>true</hibernate.show.sql>
+        		<database.generateDdl>true</database.generateDdl>
+        		<root.log.level>debug</root.log.level>
+        		<c3p0.log.level>error</c3p0.log.level>
+        		<mail.host>mail.adco.id.au</mail.host>
+        		<mail.user.name>pradco</mail.user.name>
+        		<mail.password>pa5ra11</mail.password>
+        		<mail.port>26</mail.port>
+      		</properties> 
+  		</profile>
+  		
+  		<profile>
+   	 		<id>prod</id>
+   	 		<build>
+        		<finalName>ROOT</finalName>
+      		</build>
+   	 		
+    		<properties>
+        		<hibernate.show.sql>false</hibernate.show.sql>
+        		<database.generateDdl>false</database.generateDdl>
+        		<root.log.level>error</root.log.level>
+        		<c3p0.log.level>error</c3p0.log.level>
+        		<mail.host>mail.adco.id.au</mail.host>
+        		<mail.user.name>pradco</mail.user.name>
+        		<mail.password>pa5ra11</mail.password>
+        		<mail.port>26</mail.port>
+      		</properties> 
+  		</profile>
+  		
+	</profiles>
+    
+</project>
