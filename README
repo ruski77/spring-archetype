@@ -1,4 +1,4 @@
-Follow the steps below to create a Seam/JPA/Primefaces web project:
+Follow the steps below to create a Spring 3/JPA/Primefaces 3 web project:
 
 1. If it exists, delete the target <project> directory with the following command:
 
