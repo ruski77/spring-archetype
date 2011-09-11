@@ -10,24 +10,50 @@
     <properties>
 		<java.version>1.6</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jetty.version>6.1.22</jetty.version>
+		<jetty.port>8090</jetty.port>
+		<application.contextpath>/${project.artifactId}</application.contextpath>
+		<hibernate.show.sql>true</hibernate.show.sql>
+        <database.generateDdl>true</database.generateDdl>
+        <root.log.level>debug</root.log.level>
+        <mail.host>mail.${url}</mail.host>
+        <mail.user.name>${mailLoginId}</mail.user.name>
+        <mail.password>${dbPassword}</mail.password>
+        <mail.port>26</mail.port>
+        <log4j.log.file>${project.build.directory}/log/${project.artifactId}.log</log4j.log.file>
+		<database.target>org.hibernate.dialect.MySQLDialect</database.target>
+		<database.url>jdbc:mysql://localhost/${artifactId}_db</database.url>
+		<database.driver>com.mysql.jdbc.Driver</database.driver>
+		<database.username>${artifactId}_admin</database.username>
+		<database.password>${dbPassword}</database.password>
   	</properties>
    
-    <dependencies>
-  
-        <dependency>
-			<groupId>adcowebsolutions</groupId>
-			<artifactId>adco-common</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-    	
-    </dependencies>
-    
     <build>
-   
         <plugins>
-            
+        	<plugin>
+				<!-- http://wiki.eclipse.org/Jetty/Feature/Jetty_Maven_Plugin -->
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<version>${jetty.version}</version>
+				<configuration>
+					<!-- Configure the webapp -->
+					<reload>automatic</reload>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<contextPath>${application.contextpath}</contextPath>
+					<connectors>
+						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+							<port>${jetty.port}</port>
+						</connector>
+					</connectors>
+					<requestLog implementation="org.mortbay.jetty.NCSARequestLog">
+						<filename>${project.build.directory}/log/jetty-yyyy_mm_dd-request.log</filename>
+						<retainDays>3</retainDays>
+						<append>true</append>
+						<extended>false</extended>
+						<logTimeZone>GMT</logTimeZone>
+					</requestLog>
+				</configuration>
+			</plugin>           
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.0.2</version>
@@ -35,8 +61,7 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
-            </plugin>       
-            
+            </plugin>                
             <plugin>
         		<groupId>org.apache.maven.plugins</groupId>
         		<artifactId>maven-resources-plugin</artifactId>
@@ -44,8 +69,7 @@
         		<configuration>
           			<encoding>${project.build.sourceEncoding}</encoding>
         		</configuration>
-      		</plugin>     
-      		
+      		</plugin>         		
       		<plugin>
         		<groupId>org.apache.maven.plugins</groupId>
        	 		<artifactId>maven-war-plugin</artifactId>
@@ -61,58 +85,79 @@
             			</resource>
           			</webResources>
         		</configuration>
-      		</plugin>
-            
-        </plugins>
-        
-        <resources>
-        
+     		</plugin>           
+        </plugins>       
+        <resources>    
       		<resource>
         		<directory>src/main/resources</directory>
         		<filtering>true</filtering>
-      		</resource>
-      		
-    	</resources>
-        
+      		</resource>    		
+    	</resources>      
     </build>
     
-    <profiles>
-    
+    <profiles>   
   		<profile>
     		<id>dev</id>
     		<build>
         		<finalName>${artifactId}</finalName>
+        		<plugins>
+        			<plugin>
+  						<groupId>org.codehaus.mojo</groupId>
+  						<artifactId>tomcat-maven-plugin</artifactId>
+  						<version>1.2-SNAPSHOT</version>
+  						<configuration>
+    						<url>http://localhost:8080/manager/html</url>
+    						<username>admin</username>
+							<password>admin</password>
+							<update>true</update>
+  						</configuration>
+					</plugin>
+        		</plugins>
       		</build>
     		<properties>
-        		<hibernate.show.sql>true</hibernate.show.sql>
-        		<database.generateDdl>true</database.generateDdl>
-        		<root.log.level>debug</root.log.level>
-        		<c3p0.log.level>error</c3p0.log.level>
-        		<mail.host>mail.adco.id.au</mail.host>
-        		<mail.user.name>pradco</mail.user.name>
-        		<mail.password>pa5ra11</mail.password>
-        		<mail.port>26</mail.port>
+        		<log4j.log.file>${catalina.base}/logs/${project.artifactId}.log</log4j.log.file>
       		</properties> 
-  		</profile>
-  		
+  		</profile> 		
   		<profile>
    	 		<id>prod</id>
    	 		<build>
         		<finalName>ROOT</finalName>
-      		</build>
-   	 		
+      		</build>   	 		
     		<properties>
         		<hibernate.show.sql>false</hibernate.show.sql>
         		<database.generateDdl>false</database.generateDdl>
         		<root.log.level>error</root.log.level>
-        		<c3p0.log.level>error</c3p0.log.level>
-        		<mail.host>mail.adco.id.au</mail.host>
-        		<mail.user.name>pradco</mail.user.name>
-        		<mail.password>pa5ra11</mail.password>
+        		<mail.host>mail.${url}</mail.host>
+        		<mail.user.name>${mailLoginId}</mail.user.name>
+        		<mail.password>${dbPassword}</mail.password>
         		<mail.port>26</mail.port>
+        		<log4j.log.file>${catalina.base}/logs/${project.artifactId}.log</log4j.log.file>
       		</properties> 
-  		</profile>
-  		
+  		</profile>		
 	</profiles>
+	
+	<dependencies>
+  
+        <dependency>
+			<groupId>adcowebsolutions</groupId>
+			<artifactId>adco-common</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+    	
+    </dependencies>
+    
+    <pluginRepositories>   
+
+		<pluginRepository>
+			<id>Codehaus Snapshots</id>
+			<url>http://nexus.codehaus.org/snapshots/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	
+	</pluginRepositories>
     
 </project>

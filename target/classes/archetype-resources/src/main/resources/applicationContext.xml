@@ -15,7 +15,6 @@
 
 	<context:property-placeholder location="classpath:application.properties"/>
 	
-	<context:component-scan base-package="adcowebsolutions" />
-	<!-- <context:component-scan base-package="adcowebsolutions, x.y.z.controller, x.y.z.dao" /> -->
+	<context:component-scan base-package="${package}, adcowebsolutions" />
     
 </beans>

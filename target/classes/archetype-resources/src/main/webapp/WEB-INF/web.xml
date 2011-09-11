@@ -4,89 +4,107 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 	
+	<!-- 
+		SPRING ROOT WEB APPLICATION CONTEXT
+	-->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>
-			classpath:applicationContext.xml
-		</param-value>
+		<param-value>/WEB-INF/spring/applicationContext.xml</param-value>
 	</context-param>
 	
-	<context-param>        
-      <param-name>javax.faces.DEFAULT_SUFFIX</param-name>        
-      <param-value>.xhtml</param-value>    
+	<listener>
+    	<listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+  	</listener> 
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	<filter>
+		<filter-name>PrimeFaces FileUpload Filter</filter-name>
+		<filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>PrimeFaces FileUpload Filter</filter-name>
+		<servlet-name>springMVCServlet</servlet-name>
+	</filter-mapping>
+
+	<!-- 
+		SPRING SECURITY
+	-->
+	<filter>
+    	<filter-name>springSecurityFilterChain</filter-name>
+    	<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+
+	<filter-mapping>
+   		<filter-name>springSecurityFilterChain</filter-name>
+    	<servlet-name>springMVCServlet</servlet-name>
+	</filter-mapping>	
+
+	<!-- 
+		JSF 2 IMPLEMENTATION
+	-->
+	<!-- Use JSF view templates saved as *.xhtml, for use with Facelets -->
+	<context-param>
+		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+		<param-value>.xhtml</param-value>
+	</context-param>
+  	
+  	<!-- Causes Facelets to refresh templates during development -->
+  	<context-param>
+  		<param-name>javax.faces.FACELETS_REFRESH_PERIOD</param-name>
+  		<param-value>1</param-value>
+  	</context-param>
+  	
+  	<context-param>
+      <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+      <param-value>server</param-value>
     </context-param>
+
+	<!-- Just here so the JSF implementation can initialize, *not* used at runtime -->
+	<servlet>
+		<servlet-name>FacesServlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<!-- Just here so the JSF implementation can initialize -->
+	<servlet-mapping>
+		<servlet-name>FacesServlet</servlet-name>
+		<url-pattern>*.faces</url-pattern>
+	</servlet-mapping>
+    
+	<!-- 
+		SPRING MVC
+	-->
+	<servlet>
+		<servlet-name>springMVCServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+		
+	<servlet-mapping>
+		<servlet-name>springMVCServlet</servlet-name>
+		<url-pattern>/app/*</url-pattern>
+	</servlet-mapping>
+
+  	<!-- 
+  		Spring Security Facelets tag library declaration 
+  	-->
+  	<context-param>
+  		<param-name>javax.faces.FACELETS_LIBRARIES</param-name>
+  		<param-value>/WEB-INF/springsecurity.taglib.xml</param-value>
+  	</context-param>
     
     <context-param>
 		<param-name>primefaces.PRIVATE_CAPTCHA_KEY</param-name>
 		<param-value>6LfPmsISAAAAAMx-IPPxJ3WkQVOOtlIhiTJgZurE</param-value>
 	</context-param>
-	
-	<context-param>
-    	<param-name>javax.faces.FACELETS_LIBRARIES</param-name>
-    	<param-value>/WEB-INF/springsecurity.taglib.xml</param-value>
-	</context-param>
-    
-	<listener>
-		<listener-class>
-			org.springframework.web.context.ContextLoaderListener
-		</listener-class>
-	</listener>
-	
-	<listener>
-		<listener-class>
-			org.springframework.web.context.request.RequestContextListener
-		</listener-class>
-	</listener>
-
-    <listener>
-        <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
-    </listener>
- 
-	<filter>
-		<filter-name>CharacterEncodingFilter</filter-name>
-		<filter-class>
-			org.springframework.web.filter.CharacterEncodingFilter
-		</filter-class>
-		<init-param>
-			<param-name>encoding</param-name>
-			<param-value>UTF-8</param-value>
-		</init-param>
-	</filter>
-	<filter-mapping>
-		<filter-name>CharacterEncodingFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-
-    <filter>
-        <filter-name>Spring JPA Filter</filter-name>
-        <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>Spring JPA Filter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-	<filter>
-		<filter-name>springSecurityFilterChain</filter-name>
-		<filter-class>
-			org.springframework.web.filter.DelegatingFilterProxy
-		</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>springSecurityFilterChain</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	
-	<servlet>
-		<servlet-name>Faces Servlet</servlet-name>
-		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>Faces Servlet</servlet-name>
-		<url-pattern>*.jsf</url-pattern>
-	</servlet-mapping>
 	
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
@@ -96,20 +114,10 @@
         <session-timeout>30</session-timeout> 
     </session-config>
     
-    <security-constraint>
-        <display-name>Restrict raw XHTML Documents</display-name>
-        <web-resource-collection>
-            <web-resource-name>XHTML</web-resource-name>
-            <url-pattern>*.xhtml</url-pattern>
-        </web-resource-collection>
-        <auth-constraint/>
-    </security-constraint>
-    
-    <!-- <error-page>
+    <error-page>
 		<error-code>500</error-code>
 		<location>/error.jsp?status=500</location>
 	</error-page>
-	
 	
 	<error-page>
 		<exception-type>java.lang.Throwable</exception-type>
@@ -134,6 +142,6 @@
 	<error-page>
 		<error-code>504</error-code>
 		<location>/error.jsp?status=504</location>
-	</error-page> -->
+	</error-page> 
 
 </web-app>

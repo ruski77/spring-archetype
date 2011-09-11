@@ -2,7 +2,7 @@ package ${package}.constants;
 
 import adcowebsolutions.constants.GlobalConstants;
 
-public interface Constants extends GlobalConstants  {
+public class Constants extends GlobalConstants  {
 
 	/* application name */
 	public static final String CONST_APP_NAME = "${title}";

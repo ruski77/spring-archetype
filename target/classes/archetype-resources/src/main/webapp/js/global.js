@@ -1,33 +1,3 @@
-var customToolTipLeft = {
-	width: 200,
-	padding: 5,
-	background: '#A2D959',
-	color: 'black',
-	textAlign: 'center',
-	border: {
-		width: 7,
-		radius: 5,
-		color: '#A2D959'
-	},		
-	tip: 'topLeft',
-	name: 'dark'
-};
-
-var customToolTipRight = {
-	width: 200,
-	padding: 5,
-	background: '#A2D959',
-	color: 'black',
-	textAlign: 'center',
-	border: {
-		width: 7,
-		radius: 5,
-		color: '#A2D959'
-	},		
-	tip: 'topRight',
-	name: 'dark'
-};
-
 function displayLoadingGif() {
 	document.getElementById("loadingDiv").style.display = "inline";
 }
@@ -48,7 +18,6 @@ function resetButtonText(id, text) {
 
 function disableButton(id) {
 	var inputbutton = document.getElementById(id);
-	inputbutton.innerHTML = "<p style='padding:5px 5px 5px 5px;'>Please wait...</p>";
 	inputbutton.disabled = true;
 }
 
@@ -57,3 +26,15 @@ function enableButton(id, text) {
 	inputbutton.disabled = false;
 	inputbutton.innerHTML = text;
 }
+
+function performSubmit(id) {
+	displayLoadingGif();
+	updateButtonText(id);
+	//disableButton(id); TODO haven't bee able to get button disable to work successfully.
+}
+
+/* Trim function */
+function trim(sInString) {
+  sInString = sInString.replace( /^\s+/g, "" );// strip leading
+  return sInString.replace( /\s+$/g, "" );// strip trailing
+} 

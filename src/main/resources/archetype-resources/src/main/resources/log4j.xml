@@ -8,7 +8,7 @@
 	<!-- Appenders -->
 	<appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
 	
-		<param name="File" value="${symbol_dollar}{catalina.base}/logs/${artifactId}.log"/>
+		<param name="File" value="${symbol_dollar}{log4j.log.file}"/>
 	
 		<param name="DatePattern" value="'.'yyyy-MM-dd"/>
 		<layout class="org.apache.log4j.PatternLayout">
@@ -52,10 +52,6 @@
 	
 	<logger name="org.springframework.security">
 		<level value="debug" />
-	</logger>
-	
-	<logger name="com.mchange">
-		<level value="${symbol_dollar}{c3p0.log.level}" />
 	</logger>
 
 	<!-- Root Logger -->

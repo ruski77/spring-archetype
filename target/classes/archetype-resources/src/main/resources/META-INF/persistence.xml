@@ -5,8 +5,8 @@
 	version="2.0">
 
 	<persistence-unit name="${artifactId}Database" transaction-type="RESOURCE_LOCAL">
-		  <class>adcowebsolutions.model.WebUser</class>
-		  <class>adcowebsolutions.model.WebUserRole</class>
+		  <class>adcowebsolutions.domain.Account</class>
+		  <class>adcowebsolutions.domain.AccountRole</class>
 	</persistence-unit>
 
 </persistence>

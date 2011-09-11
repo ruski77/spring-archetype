@@ -2,27 +2,30 @@
 -- Update the name of the target database below:
 drop database ${artifactId}_db;
 
+drop table file_upload;
 drop table blog_comment;
 drop table blog_data;
 drop table blog_entry;
 drop table blog;
 drop table system_config;
-drop table image;
+drop table news_data;
+drop table news;
+drop table content_data;
 drop table content;
 drop table mailing_list;
-drop table user_role;
-drop table users;
+drop table account_role;
+drop table account;
 
-create table users (
-	user_id varchar(10) primary key, 
-    first_name varchar(32) not null,
+create table account (
+	user_name varchar(10) not null,
+	password varchar(256) not null,
+	email varchar(256) not null,
+	enabled boolean,
+	first_name varchar(32) not null,
 	last_name varchar(32),
-    password varchar(128) not null,
-	email varchar(128) not null,
-    status char(1),
-	last_login_date timestamp,
 	registered_date timestamp,
-	dob date,	
+	last_login_date timestamp null default null,
+	date_of_birth date,	
 	invalid_login_count integer,
 	login_count integer,
 	comment_count integer,
@@ -31,13 +34,16 @@ create table users (
 	update_password char(1),
 	gender char(1),
 	avatar_mime_type varchar(64),
-	avatar blob
+	avatar blob,
+	constraint account_unique_1 unique (email),
+	primary key (user_name)
 );
 
-create table user_role (
-	role_id serial primary key, 
-	user_id varchar(10),
-   	role_name varchar(32)
+create table account_role (
+	role_id serial primary key,
+	user_name varchar(10) not null,
+	role_name varchar(32),
+	constraint account_role_fk_1 foreign key (user_name) references account on update cascade on delete cascade
 );
 
 create table mailing_list (
@@ -46,8 +52,8 @@ create table mailing_list (
 	created_date timestamp not null
 );
 
-create table image (
-	image_id serial primary key,
+create table content_data (
+	data_id serial primary key,
 	data blob not null,
 	thumb_data blob,
 	file_name varchar(256),
@@ -64,11 +70,35 @@ create table content (
 	detail text, 
 	content_order integer,
 	created_date timestamp not null,
-	updated_date timestamp not null,
+	modified_date timestamp not null,
 	status char(1) not null,
-    email_sent char(1) not null,
+    	email_sent char(1) not null,
 	url varchar (256), 
-	user_id varchar(10) references users (user_id) on update cascade on delete no action
+	modified_by varchar(32) references account(account_id) on update cascade on delete no action
+);
+
+create table news_data (
+	data_id serial primary key,
+	data blob not null,
+	thumb_data blob,
+	file_name varchar(256),
+	mime_type varchar(64) not null,
+	caption varchar(128),
+	description varchar(1024),
+	news_id int4 references news(news_id) on update cascade on delete cascade
+);
+
+create table news (
+	news_id serial primary key, 
+	title varchar(1024),
+	detail text, 
+	created_date timestamp not null,
+	modified_date timestamp not null,
+	status char(1) not null,
+    	hits integer not null,
+	email_sent char(1),
+	url varchar (256), 
+	modified_by varchar(32) references account(account_id) on update cascade on delete no action
 );
 
 create table system_config (
@@ -76,16 +106,18 @@ create table system_config (
   	config_data_type varchar(32) not null,
   	config_data_value varchar(32) not null,
   	created_date timestamp not null,
-  	user_id character varying(10) references users (user_id) on update cascade on delete no action,
+	modified_date timestamp not null,
+	modified_by varchar(32) references account(account_id) on update cascade on delete no action,
   	primary key (config_type, config_data_type)
 );
 
 create table blog (
 	name varchar(128) primary key,
 	description varchar(256),
-	user_id varchar(10) references users (user_id) on update cascade on delete no action,
+	modified_by varchar(32) references account(account_id) on update cascade on delete no action,
 	created_date timestamp not null,
-	visibility char(1),
+	modified_date timestamp not null,
+	visibile char(1),
 	status char(1) not null
 );
 
@@ -93,8 +125,9 @@ create table blog_entry (
 	entry_id serial  primary key,
 	title varchar(128) not null,
 	content text not null,
-	user_id varchar(10) references users (user_id) on update cascade on delete no action,
+	modified_by varchar(32) references account(account_id) on update cascade on delete no action,
 	created_date timestamp not null,
+	modified_date timestamp not null,
 	status char(1) not null,
 	hits integer not null,
 	email_sent char(1),
@@ -104,9 +137,9 @@ create table blog_entry (
 
 create table blog_comment (
 	id serial primary key, 
-    content varchar(5120),
+    	content varchar(5120),
 	created_date timestamp,
-	user_id varchar(10) references users (user_id) on update cascade on delete cascade,
+	account_id varchar(32) references account(account_id) on update cascade on delete cascade,
 	entry_id integer not null,
 	foreign key (entry_id) references blog_entry (entry_id) on update cascade on delete cascade
 );
@@ -124,52 +157,14 @@ create table blog_data (
 	foreign key (entry_id) references blog_entry (entry_id) on update cascade on delete cascade
 );
 
------------------ Unimplemented tables -----------------------
-
---drop table flavour;
---drop table category;
---drop table flavour_category_xref;
---drop table file;
-
-create table flavour (
-	flv_id serial primary key,
-	flv_type varchar(64),
-	flv_name varchar(64),
-	flv_desc varchar (1024), 
-	flv_price_single numeric, 
-	flv_price_dozen numeric, 
-	flv_rating_count integer,
-	flv_rated integer,
-	flv_order integer,
-	flv_image_id int4 references blob(blob_id) on update cascade on delete no action,
-	flv_updated_date timestamp,
-	flv_active char(1),
-	flv_gluten_free char(1),
-	flv_nut_free char(1),
-	flv_email_sent char(1),
-	flv_user_id varchar(10) references users (user_id) on update cascade on delete no action
+create table file_upload (
+	file_name varchar(256) primary key,
+	modified_by varchar(32) references account(account_id) on update cascade on delete no action,
+	created_date timestamp not null,
+	modified_date timestamp not null,
+	file_data blob,
+	download_count integer,
+	mime_type varchar(64)
 );
 
-create table category (
-	cat_id serial primary key,
-	cat_name varchar(64)
-);
 
-create table flavour_category_xref (
-	flv_id int4,
-	cat_id int4,
-	primary key (flv_id, cat_id)
-);
-
-create table file (
-	file_name varchar(128) primary key,
-	file_user_id varchar(10) references users (user_id) on update cascade on delete no action,
-	file_date timestamp,
-	file_data bytea,
-	file_type varchar(32),
-	file_download_count integer,
-	file_mime_type varchar(64),
-	file_public char(1)
-);
-
-commit;	

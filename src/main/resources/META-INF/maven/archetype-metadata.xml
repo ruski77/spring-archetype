@@ -8,6 +8,7 @@
         <requiredProperty key="basedir"/>
         <requiredProperty key="url"/>
         <requiredProperty key="dbPassword"/>
+        <requiredProperty key="mailLoginId"/>
     </requiredProperties>
     
     <fileSets>
@@ -63,6 +64,8 @@
                 <include>**/*.xml</include>
                 <include>**/*.sql</include>
                 <include>**/*.dtd</include>
+                <include>**/*.vm</include>
+                <include>**/*.jpg</include>
             </includes>
         </fileSet>
         
