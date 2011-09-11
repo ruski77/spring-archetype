@@ -1,0 +1,46 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="/WEB-INF/includes/template.xhtml">
+	
+<ui:define name="head">
+		
+</ui:define>
+
+<ui:define name="navigation">
+	
+	<ui:include src="/WEB-INF/includes/menu.xhtml">
+    	<ui:param name="page" value="error" />
+   	</ui:include>
+        
+</ui:define>
+	
+<ui:define name="content">
+		
+	<div id="errorPage">
+			
+		<h2>#{msg.header_how_embarrassing}</h2>
+      	<p style="padding:10px 0px 10px 0px;font-weight:bold;font-size:1.1em;color:#666666;">#{msg.message_application_error}.</p>
+      	<p style="font-weight:bold;font-size:1.1em;color:#666666;">#{msg.label_error_message}:</p>
+      	<ul>
+      		<li>${symbol_dollar}{exception.message}</li>
+      	</ul>
+      	<p style="padding:10px 0px 0px 0px;font-weight:bold;font-size:1.1em;color:#666666;">#{msg.label_additional_info}:</p>
+      	<ul>
+      		<li>${symbol_dollar}{header["User-Agent"]}</li>
+      	</ul>
+      	<p style="padding-top:10px;">#{msg.label_if_problem_persists}&#160;<a href="mailto:#{msg.support_email}#{msg.label_error_subject}&#160;#{msg.website_name}">#{msg.label_here}</a>&#160;#{msg.label_error_additional_details}.</p>
+      	<p><a href="javascript:history.back(1);">#{msg.label_back_to_previous}</a></p>
+	      	
+	</div>
+		
+ </ui:define>
+  
+</ui:composition>

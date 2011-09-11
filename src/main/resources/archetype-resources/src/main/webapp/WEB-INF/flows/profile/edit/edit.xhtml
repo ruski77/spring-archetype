@@ -1,0 +1,93 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="/WEB-INF/includes/template.xhtml">
+	
+<ui:define name="head">
+		
+</ui:define>
+
+<ui:define name="navigation">
+	
+	<ui:include src="/WEB-INF/includes/menu.xhtml">
+    	<ui:param name="page" value="profile" />
+   	</ui:include>
+        
+</ui:define>
+	
+<ui:define name="content">
+		
+	<h:form id="editProfileForm" prependId="false">
+		
+		<p:panel id="panel" header="#{msg.label_edit} #{flowScope.account.firstName} #{flowScope.account.lastName}">  
+		
+			<h:panelGrid columns="2" columnClasses="label,value" styleClass="grid">
+		
+				<h:panelGroup>
+					<h:outputLabel for="firstName" value="#{msg.first_name}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup id="firstNameGroup">
+					<p:inputText id="firstName" required="true" value="#{flowScope.account.firstName}" label="#{msg.first_name}" maxlength="32">
+						<p:ajax event="blur" update="firstNameGroup"/>
+					</p:inputText> 
+					&#160;<h:message for="firstName" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="lastName" value="#{msg.last_name}"/>
+				</h:panelGroup>
+				<h:panelGroup id="lastNameGroup">
+					<p:inputText id="lastName" value="#{flowScope.account.lastName}" maxlength="32"/>
+					&#160;<h:message for="lastName" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="email" value="#{msg.email}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup id="emailGroup">
+					<p:inputText id="email" value="#{flowScope.account.email}" maxlength="256" required="true" label="#{msg.email}">
+						<p:ajax event="blur" update="emailGroup"/>
+					</p:inputText>
+					&#160;<h:message for="email" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="dob" value="#{msg.label_dob}"/>
+				</h:panelGroup>
+				<h:panelGroup id="dobGroup">
+					<p:calendar id="dob" value="#{flowScope.account.dateOfBirth}" navigator="true" mode="popup" showOn="button" popupIconOnly="true" converter="localDateConverter"  pattern="#{msg.local_date_pattern}"/>
+					&#160;<h:message for="dob" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="password" value="#{msg.password}"/>
+				</h:panelGroup>
+				<h:panelGroup id="passwordGroup">
+					<p:password id="password" value="#{profileController.passwordBean.password}" label="#{msg.password}" maxlength="12"/>
+					&#160;<h:message for="password" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="verify" value="#{msg.verify_password}"/>
+				</h:panelGroup>
+				<h:panelGroup id="verifyGroup">
+					<p:password id="verify" value="#{profileController.passwordBean.verify}" label="#{msg.verify_password}" maxlength="12" feedback="false"/>
+					&#160;<h:message for="verify" errorClass="errors"/>
+				</h:panelGroup>
+		
+			</h:panelGrid>
+			
+			<p:commandButton id="saveButton" ajax="false" widgetVar="saveButton" onclick="performSubmit(this.id)" value="#{msg.save}" action="save"/>&#160;
+			#{msg.label_or}&#160;<h:commandLink value="#{msg.cancel}" action="cancel" immediate="true"/> 
+		
+		</p:panel>
+		
+	</h:form>
+		
+ </ui:define>
+  
+</ui:composition>

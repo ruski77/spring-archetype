@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd"
+	parent="parent-flow">
+	
+	<persistence-context />
+	
+	<var name="message" class="adcowebsolutions.beans.Message"/>
+	<var name="person" class="adcowebsolutions.beans.Person"/>
+
+	<view-state id="send">
+		<transition on="sendMail" to="sendContactMail" />
+		
+		<transition on="cancel" to="end">
+			<evaluate expression="contactController.cancel()" />  
+		</transition>
+	</view-state>
+	
+	<action-state id="sendContactMail">
+    	<evaluate expression="contactController.send()" />   
+        <transition on="success" to="sendComplete" />
+        <transition on="failure" to="sendFailed" />
+    </action-state>
+	
+	<end-state id="sendFailed" view="semd.xhtml" />
+	
+	<end-state id="sendComplete" view="send.xhtml" />
+	
+</flow>

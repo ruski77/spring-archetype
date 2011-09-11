@@ -1,0 +1,86 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="/WEB-INF/includes/template.xhtml">
+	
+<ui:define name="head">
+		
+</ui:define>
+
+<ui:define name="navigation">
+	
+	<ui:include src="/WEB-INF/includes/menu.xhtml">
+    	<ui:param name="page" value="contact" />
+   	</ui:include>
+        
+</ui:define>
+	
+<ui:define name="content">
+		
+	<h:form prependId="false">
+			
+		<p:panel id="contactPanel" header="#{msg.header_contact}">
+		
+			<h:panelGrid columns="2" columnClasses="label,value" styleClass="grid">
+			
+				<h:panelGroup>
+					<h:outputLabel for="name" value="#{msg.label_your_name}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup id="nameGroup">
+					<p:inputText id="name" required="true" value="#{person.firstName}" label="#{msg.label_your_name}" maxlength="32"/>
+					&#160;<h:message for="name" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="address" value="#{msg.label_your_email}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup id="addressGroup">
+					<p:inputText id="address" required="true" value="#{person.address}" label="#{msg.label_your_email}" maxlength="255" title="${msg.tooltip_valid_email}"/>
+					&#160;<h:message for="address" errorClass="errors"/>
+					<p:tooltip for="address" showEvent="focus" hideEvent="blur" /> 
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="subject" value="#{msg.label_subject}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup id="subjectGroup">
+					<p:selectOneMenu id="subject" required="true" value="#{message.subject}" label="#{msg.label_subject}" effect="drop" requiredMessage="#{msg.subject_required}">  
+						<f:selectItem itemLabel="#{msg.label_select}" itemValue="" />  
+                     	<f:selectItem itemLabel="#{msg.label_question}" itemValue="#{msg.label_question}" />  
+                     	<f:selectItem itemLabel="#{msg.label_website_inquiry}" itemValue="#{msg.label_website_inquiry}" />  
+                	</p:selectOneMenu>  
+                	&#160;<h:message for="subject" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="message" value="#{msg.label_message}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup id="messageGroup">
+					<p:inputTextarea id="message" required="true" value="#{message.content}" label="#{msg.label_message}" style="width:300px;height:100px;"/>
+					&#160;<h:message for="message" errorClass="errors"/> 
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="captcha" value="#{msg.confirm_not_robot}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup id="captchaGroup">
+					<p:captcha id="captcha" label="#{msg.label_captcha}" publicKey="6LfPmsISAAAAACHv88mn6TOM3R14sVrnq4odyiSg" theme="white" required="true"
+						requiredMessage="#{msg.captcha_requried}" converterMessage="#{msg.captcha_conversion_fail}" validatorMessage="#{msg.captcha_validation_fail}" />
+					&#160;<h:message for="captcha" errorClass="errors"/>  
+				</h:panelGroup>
+									
+			</h:panelGrid>
+			
+			<p:commandButton id="sendButton" ajax="false" onclick="performSubmit(this.id)" action="sendMail" value="#{msg.label_send}"/>&#160;or&#160;<h:commandLink value="#{msg.cancel}" action="cancel" immediate="true"/> 
+				
+		</p:panel>
+
+	</h:form>
+		
+ </ui:define>
+  
+</ui:composition>

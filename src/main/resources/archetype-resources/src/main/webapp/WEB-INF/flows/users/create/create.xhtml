@@ -1,0 +1,139 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="/WEB-INF/includes/template.xhtml">
+	
+<ui:define name="head">
+		
+</ui:define>
+
+<ui:define name="navigation">
+	
+	<ui:include src="/WEB-INF/includes/menu.xhtml">
+    	<ui:param name="page" value="user" />
+   	</ui:include>
+        
+</ui:define>
+	
+<ui:define name="content">
+		
+	<h:form id="createUserForm" prependId="false">
+		
+		<p:panel id="panel" header="#{msg.label_create_account}">  
+		
+			<h:panelGrid columns="2" columnClasses="label,value" styleClass="grid">
+			
+				<h:panelGroup>
+					<h:outputLabel for="userName" value="#{msg.userName}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup id="userNameGroup">
+					<p:inputText id="userName" required="true" value="#{flowScope.account.userName}" label="#{msg.userName}" maxlength="10" title="#{msg.toolip_username}">
+						<f:validator validatorId="userIdUniqueValidator"/>
+						<p:ajax event="blur" update="userNameGroup"/>
+					</p:inputText>
+					&#160;<h:message for="userName" errorClass="errors"/>
+					<p:tooltip for="userName" showEvent="focus" hideEvent="blur" />  
+				</h:panelGroup>
+		
+				<h:panelGroup>
+					<h:outputLabel for="firstName" value="#{msg.first_name}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup id="firstNameGroup">
+					<p:inputText id="firstName" required="true" value="#{flowScope.account.firstName}" label="#{msg.first_name}" maxlength="32">
+						<p:ajax event="blur" update="firstNameGroup"/>
+					</p:inputText> 
+					&#160;<h:message for="firstName" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="lastName" value="#{msg.last_name}"/>
+				</h:panelGroup>
+				<h:panelGroup id="lastNameGroup">
+					<p:inputText id="lastName" value="#{flowScope.account.lastName}" maxlength="32"/>
+					&#160;<h:message for="lastName" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="email" value="#{msg.email}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup id="emailGroup">
+					<p:inputText id="email" value="#{flowScope.account.email}" maxlength="256" required="true" label="#{msg.email}">
+						<p:ajax event="blur" update="emailGroup"/>
+					</p:inputText>
+					&#160;<h:message for="email" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="dob" value="#{msg.label_dob}"/>
+				</h:panelGroup>
+				<h:panelGroup id="dobGroup">
+					<p:calendar id="dob" value="#{flowScope.account.dateOfBirth}" navigator="true" mode="popup" showOn="button" popupIconOnly="true" converter="localDateConverter"  pattern="#{msg.local_date_pattern}"/>
+					&#160;<h:message for="dob" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="gender" value="#{msg.label_gender}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup>
+					<h:selectOneRadio style="font-size:12px;" id="gender" value="#{flowScope.account.gender}">
+		  				<f:selectItem itemLabel="#{msg.label_male}" itemValue="M" />
+		  				<f:selectItem itemLabel="#{msg.label_female}" itemValue="F" />
+					</h:selectOneRadio>&#160;<h:message for="gender" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="password" value="#{msg.password}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup id="passwordGroup">
+					<p:password id="password" value="#{accountController.passwordBean.password}" required="true" label="#{msg.password}" maxlength="12">
+						<p:ajax event="blur" update="passwordGroup"/>
+					</p:password> 
+					&#160;<h:message for="password" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="verify" value="#{msg.verify_password}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup>
+					<p:password id="verify" value="#{accountController.passwordBean.verify}" required="true" label="#{msg.verify_password}" maxlength="12" feedback="false"/>
+					&#160;<h:message for="verify" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup rendered="#{sec:areAllGranted('ROLE_ADMIN')}">
+					<h:outputLabel for="userRoles" value="#{msg.user_roles}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup id="userRolesGroup" rendered="#{sec:areAllGranted('ROLE_ADMIN')}">
+					<p:pickList id="userRoles" value="#{accountController.roleNames}" var="roleName" itemLabel="${symbol_pound}{roleName}" required="true" 
+               				itemValue="#{roleName}" requiredMessage="#{msg.user_role_required}">
+               			<f:facet name="add">  
+           					<p:graphicImage value="/img/arrow_right.png" title="#{msg.label_add_role}"/>
+        				</f:facet> 
+        				<f:facet name="remove">  
+            				<p:graphicImage value="/img/arrow_left.png" title="#{msg.label_remove_role}"/>  
+        				</f:facet>  
+               			<f:facet name="sourceCaption">#{msg.label_available}</f:facet>  
+						<f:facet name="targetCaption">#{msg.label_configured}</f:facet>  
+               		</p:pickList> 
+					&#160;<h:message for="userRoles" errorClass="errors"/>
+				</h:panelGroup>
+				
+		
+			</h:panelGrid>
+			
+			<p:commandButton id="saveButton" ajax="false" widgetVar="saveButton" onclick="performSubmit(this.id)" value="#{msg.label_create}" action="createAccount"/>&#160;
+			#{msg.label_or}&#160;<h:commandLink value="#{msg.cancel}" action="cancel" immediate="true"/> 
+		
+		</p:panel>
+		
+	</h:form>
+		
+ </ui:define>
+  
+</ui:composition>

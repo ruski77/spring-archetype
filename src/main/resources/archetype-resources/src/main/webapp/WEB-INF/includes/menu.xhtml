@@ -1,0 +1,42 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+
+    <ul id="nav">
+   		<li id="page_home"><h:outputLink value="#{facesContext.externalContext.requestContextPath}/app/home">#{msg.label_home}</h:outputLink></li>
+		<li id="page_about"><h:outputLink value="#{facesContext.externalContext.requestContextPath}/app/about">#{msg.label_about}</h:outputLink></li>
+		<li id="page_contact"><h:outputLink value="#{facesContext.externalContext.requestContextPath}/app/contact">#{msg.header_contact}</h:outputLink></li>
+		<sec:authorize ifAllGranted="ROLE_ADMIN">
+			<li id="page_user">
+				<h:outputLink value="#">#{msg.label_users}</h:outputLink>
+				<ul class="sub">
+       				<li><h:outputLink value="#{facesContext.externalContext.requestContextPath}/app/users">#{msg.label_list}</h:outputLink></li>
+        			<li><h:outputLink value="#{facesContext.externalContext.requestContextPath}/app/users/create">#{msg.label_create}</h:outputLink></li>
+				</ul>
+			</li>
+		</sec:authorize>
+		<sec:authorize ifAnyGranted="ROLE_USER, ROLE_ADMIN">
+			<li id="page_profile"><h:outputLink value="#{facesContext.externalContext.requestContextPath}/app/profile" >#{msg.label_my_profile}</h:outputLink></li>
+	    </sec:authorize>
+		<sec:authorize ifAllGranted="ROLE_ANONYMOUS">
+			<li id="page_login"><h:outputLink value="#{facesContext.externalContext.requestContextPath}/app/login">#{msg.login}</h:outputLink></li>
+		</sec:authorize>
+		<sec:authorize ifAnyGranted="ROLE_USER, ROLE_ADMIN">
+			<li><h:outputLink value="#{facesContext.externalContext.requestContextPath}/app/logout">#{msg.label_logout}</h:outputLink></li>
+		</sec:authorize>
+	</ul>				
+
+    <script type="text/javascript">
+        function setClass(id, className) {
+            obj = document.getElementById(id);
+            if (obj != null) {
+                obj.className = className;
+            }
+        }
+        setClass("page_" + "#{page}", "current");
+    </script>
+</div> 

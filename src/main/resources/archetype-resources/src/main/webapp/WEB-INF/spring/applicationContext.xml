@@ -1,0 +1,63 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:lang="http://www.springframework.org/schema/lang"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+           http://www.springframework.org/schema/lang
+           http://www.springframework.org/schema/lang/spring-lang-3.0.xsd">
+           
+    <import resource="persistence-config.xml"/>  
+    <import resource="security-config.xml"/>      
+
+	<context:property-placeholder location="classpath:application.properties"/>
+	
+	<!-- Scan for Spring beans declared via annotations. -->
+	<context:component-scan base-package="adcowebsolutions, ${url}" />
+	
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="classpath:Messages" />
+	</bean>
+	
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+		<property name="defaultLocale" value="en" />
+	</bean>
+	
+	<bean id="imageUtils" class="adcowebsolutions.utils.ImageUtils"/>
+	
+	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="java.lang.Throwable">error</prop>
+			</props>
+		</property>
+	</bean>
+	
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"
+          p:host="${symbol_dollar}{mail.host}"
+          p:username="${symbol_dollar}{mail.user.name}"
+          p:password="${symbol_dollar}{mail.password}"
+          p:port="26">
+    	<property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+            </props>
+        </property>
+    		      
+    </bean>
+    
+    <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean" 
+          p:resourceLoaderPath="classpath:/mail" 
+          p:preferFileSystemAccess="false"/>
+          
+    <bean id="emailSendingService" class="adcowebsolutions.mail.EmailSendingService"/>
+    
+</beans>

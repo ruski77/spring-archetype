@@ -1,0 +1,180 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="/WEB-INF/includes/template.xhtml">
+	
+<ui:define name="head">
+		
+</ui:define>
+
+<ui:define name="navigation">
+	
+	<ui:include src="/WEB-INF/includes/menu.xhtml">
+    	<ui:param name="page" value="user"/>
+   	</ui:include>
+        
+</ui:define>
+	
+<ui:define name="content">
+		
+	<h:form id="userListForm">
+		
+		<p:dataTable id="accounts" value="#{accountController.accounts}" var="account" emptyMessage="#{msg.message_no_users}" 
+			paginator="true" rows="25" paginatorPosition="bottom" loadingMessage="#{msg.loading_data}" paginatorAlwaysVisible="false">
+		
+			<f:facet name="header">  
+		       	<h:outputText value="#{msg.label_user_list}"/>
+         	</f:facet>  
+         	
+         	<p:column>  
+ 				<f:facet name="header">  
+                 		 
+             	</f:facet> 
+             	
+             	<p:graphicImage id="malePicture" cache="false" value="/img/user-male.png" rendered="#{account.avatar == null and account.gender == 'M'}" title="#{account.userName}"/> 
+             	<p:tooltip for="malePicture" showEffect="fade" hideEffect="fade"/>    
+             	
+             	<p:graphicImage id="femalePicture" cache="false" value="/img/user-female.png" rendered="#{account.avatar == null and account.gender == 'F'}" title="#{account.userName}"/>
+             	<p:tooltip for="femalePicture" showEffect="fade" hideEffect="fade"/> 
+     			
+     			<p:graphicImage id="dynaPicture" cache="false" value="#{accountController.streamedAvatar}" rendered="#{account.avatar != null}" title="#{account.userName}">  				
+     				<f:param id="userName" name="userName" value="#{account.userName}"/>
+     			</p:graphicImage>
+     			<p:tooltip for="dynaPicture" showEffect="fade" hideEffect="fade"/>
+     			
+         	</p:column> 
+         	
+         	<p:column sortBy="#{account.firstName}">  
+ 				<f:facet name="header">  
+               		<h:outputText value="#{msg.first_name}"/>
+             	</f:facet>  
+             	<h:outputText value="#{account.firstName}"/>  
+         	</p:column>  
+         		
+         	<p:column sortBy="#{account.lastName}">  
+ 				<f:facet name="header">  
+               		<h:outputText value="#{msg.last_name}"/>
+           		</f:facet>  
+           		<h:outputText value="#{account.lastName}"/>  
+         	</p:column>  
+         	
+         	<p:column sortBy="#{account.lastLoginDate}">  
+ 				<f:facet name="header">  
+                	<h:outputText value="#{msg.label_last_login}"/>
+             	</f:facet>  
+             	<h:outputText value="#{account.lastLoginDate}" rendered="#{account.lastLoginDate != null}">
+             		<f:converter converterId="localDateTimeConverter"/>
+	     		</h:outputText>
+	     		<h:outputText value="#{msg.label_never}" rendered="#{account.lastLoginDate == null}"/>
+         	</p:column>  
+         		
+         	<p:column sortBy="#{account.enabled}">  
+ 				<f:facet name="header">  
+               		<h:outputText value="#{msg.label_status}"/>
+            	</f:facet>  
+            	<h:outputText value="#{msg.label_disabled}" rendered="#{!account.enabled}"/>  
+            	<h:outputText value="#{msg.label_enabled}" rendered="#{account.enabled}"/>  
+         	</p:column>
+         	
+         	<p:column>  
+ 				<f:facet name="header">  
+                		
+            	</f:facet>  
+           			
+           		<p:menuButton value="#{msg.label_actions}" widgetVar="menuwidget#{account.userName}">
+           		
+           			<p:menuitem value="#{msg.label_edit}" action="edit" rendered="#{sec:areAllGranted('ROLE_ADMIN')}">
+           				<f:setPropertyActionListener value="${symbol_pound}{account}" target="#{accountController.selectedAccount}"/>
+           			</p:menuitem>
+           			
+           			<p:menuitem value="#{msg.label_enable}" action="#{accountController.updateStatus}" update="messages, userListForm:accounts" rendered="#{sec:areAllGranted('ROLE_ADMIN') and !account.enabled}">
+						<f:setPropertyActionListener value="${symbol_pound}{account}" target="#{accountController.selectedAccount}"/>
+					</p:menuitem>
+					<p:menuitem value="#{msg.label_disable}" action="#{accountController.updateStatus}" update="messages, userListForm:accounts" rendered="#{sec:areAllGranted('ROLE_ADMIN') and account.enabled}">
+						<f:setPropertyActionListener value="${symbol_pound}{account}" target="#{accountController.selectedAccount}"/>
+					</p:menuitem>
+           			
+           			<p:menuitem value="#{msg.label_delete_account}" oncomplete="deleteConfirm.show()" rendered="#{sec:areAllGranted('ROLE_ADMIN')}">
+						<f:setPropertyActionListener value="${symbol_pound}{account}" target="#{accountController.selectedAccount}"/>
+					</p:menuitem>
+           			
+           			<p:menuitem value="#{msg.label_delete_picture}" oncomplete="deleteAvatarConfirm.show()" rendered="#{sec:areAllGranted('ROLE_ADMIN') and account.avatar != null}">
+						<f:setPropertyActionListener value="${symbol_pound}{account}" target="#{accountController.selectedAccount}"/>
+					</p:menuitem>
+					
+					<p:menuitem value="#{msg.label_reset_password}" rendered="#{sec:areAllGranted('ROLE_ADMIN')}" oncomplete="resetConfirm.show()"/>
+				
+				</p:menuButton>
+				
+         	</p:column>  
+         	
+         	<f:facet name="footer">  
+                 
+				<div id="exportPanel" style="padding:0px;text-align:right;">
+							
+					<h:commandLink id="exportXlsLink" title="#{msg.label_export_xls}">
+						<h:graphicImage value="/img/excel.png" style="border:0"/>
+						<p:dataExporter type="xls" target="accounts" fileName="#{msg.website_name}_users" excludeColumns="0,5"/>
+					</h:commandLink>
+					<p:tooltip for="exportXlsLink" showEffect="fade" hideEffect="fade"/> 
+							
+					<h:commandLink id="exportPdfLink" title="#{msg.label_export_pdf}">
+						<h:graphicImage value="/img/pdf.png" style="border:0"/>
+						<p:dataExporter type="pdf" target="accounts" fileName="#{msg.website_name}_users" excludeColumns="0,5"/>
+					</h:commandLink>
+					<p:tooltip for="exportPdfLink" showEffect="fade" hideEffect="fade"/> 
+				
+					<h:commandLink id="exportCsvLink" title="#{msg.label_export_csv}">
+						<h:graphicImage value="/img/csv.png" style="border:0"/>
+						<p:dataExporter type="csv" target="accounts" fileName="#{msg.website_name}_users" excludeColumns="0,5"/>
+					</h:commandLink>
+					<p:tooltip for="exportCsvLink" showEffect="fade" hideEffect="fade"/> 
+				
+					<h:commandLink id="exportXmlLink" title="#{msg.label_export_xml}">
+						<h:graphicImage value="/img/xml.png" style="border:0"/>
+						<p:dataExporter type="xml" target="accounts" fileName="#{msg.website_name}_users" excludeColumns="0,5"/>
+					</h:commandLink>
+					<p:tooltip for="exportXmlLink" showEffect="fade" hideEffect="fade"/> 
+							
+				</div>
+					
+             </f:facet>  
+         	
+		</p:dataTable>
+		
+		<p:confirmDialog message="#{msg.message_reset_password_confirm}"  
+           	showEffect="bounce" hideEffect="explode" fixedCenter="true" modal="true" draggable="false"
+            header="#{msg.header_reset_password}" severity="alert" widgetVar="resetConfirm">  
+                 
+       		<p:commandButton value="#{msg.label_yes_sure}" update="messages" onclick="displayLoadingGif();resetConfirm.hide()" oncomplete="hideLoadingGif()" action="resetPassword"/>  
+       		<p:commandButton value="#{msg.label_not_yet}" onclick="resetConfirm.hide()" action="cancel" type="button"/>   
+                 
+   		</p:confirmDialog>
+   		
+   		<p:confirmDialog message="#{msg.message_delete_pic_confirm}"  
+         	showEffect="bounce" hideEffect="explode" fixedCenter="true" modal="true" draggable="false"
+           	header="#{msg.message_delete_profile_pic}" severity="alert" widgetVar="deleteAvatarConfirm">  
+                 
+       		<p:commandButton value="#{msg.label_yes_sure}" update="messages, accounts" oncomplete="deleteAvatarConfirm.hide()" action="deleteAvatar"/>  
+       		<p:commandButton value="#{msg.label_not_yet}" onclick="deleteAvatarConfirm.hide()" action="cancel" type="button"/>   
+                 
+   		</p:confirmDialog>
+   		
+   		<p:confirmDialog message="#{msg.message_delete_user_confirm}"  
+        	showEffect="bounce" hideEffect="explode" fixedCenter="true" modal="true" draggable="false"
+            header="#{msg.label_delete_account}" severity="alert" widgetVar="deleteConfirm">  
+                   
+         	<p:commandButton value="#{msg.label_yes_sure}" update="messages, accounts" oncomplete="deleteConfirm.hide()" action="#{accountController.delete}"/>  
+         	<p:commandButton value="#{msg.label_not_yet}" onclick="deleteConfirm.hide()" action="cancel" type="button"/>   
+      
+   		</p:confirmDialog>  
+	
+	</h:form>
+		
+ </ui:define>
+  
+</ui:composition>

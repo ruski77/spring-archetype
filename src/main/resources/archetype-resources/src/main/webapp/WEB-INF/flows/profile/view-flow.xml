@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd"
+	parent="parent-flow">
+	
+	<persistence-context />
+	
+	<on-start>
+        <evaluate expression="profileController.view(currentUser.name)" result="flowScope.account" />
+    </on-start>
+	
+	<view-state id="view">
+		<transition on="delete" to="deleteProfile" />
+	</view-state>
+    
+    <action-state id="deleteProfile">
+        <evaluate expression="profileController.delete(flowScope.account)" />   
+        <transition on="success" to="deleteSuccess" />
+        <transition on="failure" to="editComplete" />
+    </action-state>
+	
+	<end-state id="editComplete" view="view.xhtml"/>
+	
+	<end-state id="deleteSuccess" view="externalRedirect:servletRelative:/logout"/>
+	
+</flow>

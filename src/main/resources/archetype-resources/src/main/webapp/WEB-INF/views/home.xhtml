@@ -4,19 +4,27 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.prime.com.tr/ui"
-	xmlns:sec="http://www.springframework.org/security/facelets/tags"
-	template="template.xhtml">
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="/WEB-INF/includes/template.xhtml">
 	
 <ui:define name="head">
 		
+</ui:define>
+
+<ui:define name="navigation">
+	
+	<ui:include src="/WEB-INF/includes/menu.xhtml">
+    	<ui:param name="page" value="home" />
+   	</ui:include>
+        
 </ui:define>
 	
 <ui:define name="content">
 		
 	<h:form prependId="false">
 			
-		<h2>#{msg.header_contact}</h2>	
-
+		<h2>#{msg.label_home}</h2>	
+		
 	</h:form>
 		
  </ui:define>

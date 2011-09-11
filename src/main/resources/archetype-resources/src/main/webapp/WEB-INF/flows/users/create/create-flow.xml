@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd"
+	parent="parent-flow">
+	
+	<persistence-context/>
+	
+	<on-start>
+		<evaluate expression="accountController.loadUserForCreation()" result="flowScope.account"/>
+	</on-start>
+	
+	<view-state id="create">
+	    <secured attributes="ROLE_ADMIN"/>
+		<transition on="createAccount" to="createUser"/>
+		<transition on="cancel" to="cancelCreate">
+    		<evaluate expression="accountController.cancel()"/>            
+		</transition>
+	</view-state>
+	
+	<action-state id="createUser">
+    	<evaluate expression="accountController.create(flowScope.account)"/>   
+        <transition on="success" to="createComplete"/>
+        <transition on="failure" to="create"/>
+    </action-state>
+    
+    <end-state id="cancelCreate" view="externalRedirect:servletRelative:/users"/> 
+    
+    <end-state id="createComplete" view="externalRedirect:servletRelative:/users?successCreate=1"/>
+	
+</flow>

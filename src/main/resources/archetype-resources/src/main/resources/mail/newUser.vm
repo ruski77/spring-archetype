@@ -1,0 +1,15 @@
+<html>
+<body>
+
+<p>${msg.getString('label_hi')}&#160;${account.firstName},</p>
+<p>${msg.getString('account_has_been_setup')}&#160;${msg.getString('website_url')}!</p>
+<p>${msg.getString('login_details_are')}:</p>
+<p>${msg.getString('userName')}:&#160;${account.userName}<br/>${msg.getString('password')}:&#160;${password}</p>
+<p>${msg.getString('label_regards')},</p>
+<p>${msg.getString('support_name')}</p>
+<a href="${msg.getString('website_url')}"><img src="cid:logo" style="border:0px;"/></a>
+<p><a href="${msg.getString('website_url')}">${msg.getString('website_url')}</a></p>
+
+</body>
+
+</html>

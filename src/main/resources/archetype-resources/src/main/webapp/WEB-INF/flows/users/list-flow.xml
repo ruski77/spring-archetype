@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd"
+	parent="parent-flow">
+	
+	<persistence-context />
+	
+	<view-state id="list">
+		<secured attributes="ROLE_ADMIN"/>
+		
+	    <transition on="resetPassword" to="success" />
+	    <transition on="cancel" to="success">
+    		<evaluate expression="accountController.cancel()"/>            
+		</transition>
+		<transition on="delete" to="success">
+    		<evaluate expression="accountController.delete()"/>            
+		</transition>
+		<transition on="deleteAvatar" to="deleteAvatarAction" />
+		<transition on="edit" to="editUser" />
+	</view-state>
+	
+	<action-state id="deleteAvatarAction">
+        <evaluate expression="accountController.deleteAvatar()"/>   
+        <transition on="success" to="success"/>
+        <transition on="failure" to="success"/>
+    </action-state>
+	
+	<end-state id="success" view="list.xhtml"/>
+	
+	<end-state id="editUser" view="externalRedirect:servletRelative:/users/edit"/>
+	
+</flow>

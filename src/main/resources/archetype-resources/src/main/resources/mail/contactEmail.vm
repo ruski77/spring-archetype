@@ -1,0 +1,10 @@
+<html>
+<body>
+
+<p>${message.content}</p>
+<p>${msg.getString('label_from')}&#160;${person.firstName}</p>
+<p>${msg.getString('submitted_via_contact')}&#160;<a href="${msg.getString('website_url')}">${msg.getString('website_url')}</a>.</p>
+
+</body>
+
+</html>

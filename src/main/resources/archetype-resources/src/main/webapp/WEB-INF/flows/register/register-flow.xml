@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd"
+	parent="parent-flow">
+	
+	<persistence-context/>
+
+	<view-state id="register">
+		<transition on="signup" to="registerAccount" />
+		
+		<transition on="cancel" to="registerComplete">
+    		<evaluate expression="registerController.cancel()"/>            
+		</transition>
+	</view-state>
+	
+	<action-state id="registerAccount">
+        <evaluate expression="registerController.register()"/>   
+        <transition on="success" to="registerComplete"/>
+        <transition on="failure" to="registerFailed"/>
+    </action-state>
+	
+	<end-state id="registerFailed" view="register.xhtml"/>
+	
+	<end-state id="registerComplete" view="/WEB-INF/views/login.xhtml"/>
+	
+</flow>

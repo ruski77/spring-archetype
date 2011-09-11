@@ -1,0 +1,140 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="/WEB-INF/includes/template.xhtml">
+	
+<ui:define name="head">
+		
+</ui:define>
+
+<ui:define name="navigation">
+	
+	<ui:include src="/WEB-INF/includes/menu.xhtml">
+    	<ui:param name="page" value="profile" />
+   	</ui:include>
+        
+</ui:define>
+	
+<ui:define name="content">
+		
+	<h:form id="profileForm" enctype="multipart/form-data" prependId="false">
+	
+		<p:panel id="profilePanel" header="#{flowScope.account.firstName} #{flowScope.account.lastName}">
+		
+			<div style="width:99%;text-align:right;">
+    			<p:menuButton value="#{msg.label_actions}">
+					<p:menuitem value="#{msg.label_edit_your_details}" url="/app/profile/edit"/>
+					<p:menuitem value="#{msg.label_delete_your_account}" oncomplete="deleteAccountConfirm.show()"/>
+				</p:menuButton>
+  			</div>
+		
+			<table style="width:75%;" class="viewTable">
+     			<tr>
+     				<td style="width:35%;">
+     					<p:graphicImage cache="false" style="padding-bottom:15px;" value="/img/user-male.png" rendered="#{flowScope.account.avatar == null and flowScope.account.gender == 'M'}"/>    
+             			<p:graphicImage cache="false" style="padding-bottom:15px;" value="/img/user-female.png" rendered="#{flowScope.account.avatar == null and flowScope.account.gender == 'F'}"/>
+     					<p:graphicImage cache="false" style="padding-bottom:15px;" value="#{profileController.avatarContent}" rendered="#{flowScope.account.avatar != null}"/>
+     				</td>
+     				<td>
+	     				<p:fileUpload value="#{profileController.file}" mode="simple" rendered="#{flowScope.account.avatar == null}"/>  
+	     				<p:commandButton id="uploadPicButton" value="#{msg.label_upload_pic}" ajax="false" title="#{msg.tooltip_upload_pic}" 
+	                 					actionListener="#{profileController.uploadImage}" rendered="#{flowScope.account.avatar == null}"/> 
+	                 	<p:tooltip for="uploadPicButton" showEffect="fade" hideEffect="fade"/>  
+	  				
+	     				<p:commandButton id="deletePicButton" value="#{msg.label_delete_picture}" title="#{msg.tooltip_delete_pic}" oncomplete="deleteConfirm.show()" rendered="#{flowScope.account.avatar != null}" style="width:150px;"/>
+	     				<p:tooltip for="deletePicButton" showEffect="fade" hideEffect="fade"/>  
+     				</td>
+     			</tr>	
+     			<tr>
+	     			<td style="font-weight:bold;">
+	     				<h:outputText value="#{msg.label_joined}:"/>
+	     			</td>
+	     			<td>
+	     				<h:outputText value="#{flowScope.account.registeredDate}">
+	     					<f:converter converterId="localDateTimeConverter"/>
+	     				</h:outputText>
+	     			</td>
+	     		</tr>
+	     		<tr>
+	     			<td style="font-weight:bold;">
+	     				<h:outputText value="#{msg.label_last_login}:"/>
+	     			</td>
+	     			<td>
+	     				<h:outputText value="#{sessionScope.accountSession.lastLoginDate}" rendered="#{not empty sessionScope.accountSession.lastLoginDate}">
+	     					 <f:converter converterId="localDateTimeConverter"/>
+	     				</h:outputText>
+	     				<h:outputText value="#{msg.label_never}" rendered="#{empty sessionScope.accountSession.lastLoginDate}"/>
+	     			</td>
+	     		</tr>
+	     		<tr>
+	     			<td style="font-weight:bold;">
+	     				<h:outputText value="#{msg.label_blog_count}:"/>
+	     			</td>
+	     			<td>
+	     				<h:outputText value="#{flowScope.account.blogCount}"/>
+	     			</td>
+	     		</tr>
+	     		<tr>
+	     			<td style="font-weight:bold;">
+	     				<h:outputText value="#{msg.label_comment_count}:"/>
+	     			</td>
+	     			<td>
+	     				<h:outputText value="#{flowScope.account.commentCount}"/>
+	     			</td>
+	     		</tr>
+	     		<tr>
+	     			<td style="font-weight:bold;">
+	     				<h:outputText value="#{msg.label_news_count}:"/>
+	     			</td>
+	     			<td>
+	     				<h:outputText value="#{flowScope.account.newsCount}"/>
+	     			</td>
+	     		</tr>
+	     		<tr>
+	     			<td style="font-weight:bold;">
+	     				<h:outputText value="#{msg.label_roles}:"/>
+	     			</td>
+	     			<td>
+	     				<c:forEach var="role" items="#{flowScope.account.roles}" varStatus="roleCounter">
+	     					<c:choose>
+         						<c:when test="#{roleCounter.index == 0}">
+           							<h:outputText value="#{role.roleName}"/>
+          						</c:when>
+          						<c:otherwise>
+            						<h:outputText value=", #{role.roleName}"/>
+          						</c:otherwise>
+        					</c:choose>
+	     				</c:forEach>
+	     			</td>
+	     		</tr>
+	     	</table>
+				
+		</p:panel>		
+		
+		<p:confirmDialog message="#{msg.message_delete_your_profile_pic_confirm}"  
+        	showEffect="drop" hideEffect="explode" fixedCenter="true" modal="true" draggable="false"
+            header="#{msg.message_delete_profile_pic}" severity="alert" widgetVar="deleteConfirm">  
+                   
+        	<p:commandButton value="#{msg.label_yes_sure}" update="profilePanel messages" oncomplete="deleteConfirm.hide()" action="#{profileController.deleteImage}"/>  
+         	<p:commandButton value="#{msg.label_not_yet}" onclick="deleteConfirm.hide()" action="#{profileController.cancel}" type="button"/>   
+                   
+    	</p:confirmDialog>  
+     	 	
+     	<p:confirmDialog message="#{msg.message_delete_your_account_confirm}"  
+        	showEffect="drop" hideEffect="explode" fixedCenter="true" modal="true" draggable="false"
+            header="#{msg.message_delete_your_account}" severity="alert" widgetVar="deleteAccountConfirm">  
+                   
+         	<p:commandButton value="#{msg.label_yes_sure}" oncomplete="deleteAccountConfirm.hide()" ajax="false" action="delete"/> 
+         	<p:commandButton value="#{msg.label_not_yet}" onclick="deleteAccountConfirm.hide()" action="#{profileController.cancel}" type="button"/>   
+                   
+     	</p:confirmDialog>  
+
+	</h:form>
+		
+ </ui:define>
+  
+</ui:composition>

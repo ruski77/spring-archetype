@@ -15,7 +15,22 @@
 	   	<message-bundle>
 	   		Messages
 	   	</message-bundle>	
-		
+	   	
 	</application>
+	
+	<validator>
+    	<validator-id>userIdUniqueValidator</validator-id>
+    	<validator-class>adcowebsolutions.validator.UserIdUniqueValidator</validator-class>
+	</validator>
+	
+	<converter>
+		<converter-id>localDateConverter</converter-id>
+		<converter-class>adcowebsolutions.converter.LocalDateConverter</converter-class>
+	</converter>
+	
+	<converter>
+		<converter-id>localDateTimeConverter</converter-id>
+		<converter-class>adcowebsolutions.converter.LocalDateTimeConverter</converter-class>
+	</converter>
 	
 </faces-config>

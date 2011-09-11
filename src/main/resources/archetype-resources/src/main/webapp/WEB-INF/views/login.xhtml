@@ -1,0 +1,106 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="/WEB-INF/includes/template.xhtml">
+	
+<ui:define name="head">
+
+	<script type="text/javascript">
+		window.onload = function() {
+        	// focus on username
+        	document.getElementById('j_username').focus();
+       	 	document.getElementById('j_username').select()
+		}
+	
+	    function validateLogin() {
+			clearLoginErrors();
+			var userName = trim(document.getElementById("j_username").value);
+			var password = trim(document.getElementById("j_password").value);
+			if (userName == "") { 
+				document.getElementById("userNameError").style.display = "inline";
+				document.getElementById("j_username").select();
+				document.getElementById("j_username").focus();
+				if (password == "") {
+					document.getElementById("passwordError").style.display = "inline";
+				}
+				return false;
+			} else if (password == "") {
+				document.getElementById("passwordError").style.display = "inline";
+				document.getElementById("j_password").select();
+				document.getElementById("j_password").focus();
+				return false;
+			}
+				
+			return true;
+		}
+
+		function clearLoginErrors() {
+    		document.getElementById("userNameError").style.display = "none";
+    		document.getElementById("passwordError").style.display = "none";
+  		}
+	</script>
+		
+</ui:define>
+
+<ui:define name="navigation">
+	
+	<ui:include src="/WEB-INF/includes/menu.xhtml">
+    	<ui:param name="page" value="login" />
+   	</ui:include>
+        
+</ui:define>
+	
+<ui:define name="content">
+					
+	<p:panel header="#{msg.login}">
+	
+		<form action="${symbol_dollar}{request.contextPath}/app/j_spring_security_check" method="post">
+		
+			<table cellspacing="2" cellpadding="2" class="loginTable">
+				<tbody>
+					<c:if test="${symbol_dollar}{not empty param.error}">
+						<c:set var="username" value="${symbol_dollar}{sessionScope.SPRING_SECURITY_LAST_USERNAME}"/>
+						<tr><td colspan="2" class="errors">#{sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}</td></tr>
+					</c:if>		
+					<c:if test="${symbol_dollar}{not empty param.expired}">
+						<tr><td colspan="2" class="errors">#{msg.user_session_expired}</td></tr>
+					</c:if>		
+					<c:if test="${symbol_dollar}{not empty param.logout}">
+						<tr><td colspan="2" class="errors">#{msg.logout_success}</td></tr>
+					</c:if>				
+					<tr>
+						<td>#{msg.userName}&#160;<span class="required">*</span></td>
+						<td>
+							<h:inputText id="j_username" styleClass= "inputField" required="true" maxlength="10" value="${symbol_pound}{username}"/>&#160;<div class="errors" style="display:none" id="userNameError">#{msg.error_user_name_req}</div>
+						</td>
+					</tr>
+					<tr>
+						<td>#{msg.password}&#160;<span class="required">*</span></td>
+						<td>
+							<h:inputSecret id="j_password" styleClass= "inputField" required="true" maxlength="12"/>&#160;<div class="errors" style="display:none" id="passwordError">#{msg.error_password_req}</div>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<h:selectBooleanCheckbox id="_spring_security_remember_me"/>&#160;<h:outputText value="#{msg.remember_me}"/>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<h:commandButton type="submit" id="loginButton" value="#{msg.login}" styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" onclick="return validateLogin();"/>&#160;or&#160;<h:outputLink value="register">#{msg.register}</h:outputLink> 
+			
+		</form>
+		
+	</p:panel>
+		
+ </ui:define>
+  
+</ui:composition>

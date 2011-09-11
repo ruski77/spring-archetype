@@ -1,0 +1,116 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="/WEB-INF/includes/template.xhtml">
+	
+<ui:define name="head">
+		
+</ui:define>
+
+<ui:define name="navigation">
+	
+	<ui:include src="/WEB-INF/includes/menu.xhtml">
+    	<ui:param name="page" value="login" />
+   	</ui:include>
+   	        
+</ui:define>
+	
+<ui:define name="content">
+
+	<h:form prependId="false">	
+					
+		<p:panel id="registerPanel" header="#{msg.register}">
+		
+			<h:panelGrid columns="2" columnClasses="label,value" styleClass="grid">
+			
+				<h:panelGroup>
+					<h:outputLabel for="userName" value="#{msg.userName}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup id="userNameGroup">
+					<p:inputText id="userName" required="true" value="#{registerController.account.userName}" label="#{msg.userName}" maxlength="10" title="#{msg.toolip_username}">
+						<f:validator validatorId="userIdUniqueValidator"/>
+						<p:ajax event="blur" update="userNameGroup"/>
+					</p:inputText>
+					&#160;<h:message for="userName" errorClass="errors"/>
+					<p:tooltip for="userName" showEvent="focus" hideEvent="blur" />  
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="firstName" value="#{msg.first_name}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup id="firstNameGroup">
+					<p:inputText id="firstName" required="true" value="#{registerController.account.firstName}" label="#{msg.first_name}" maxlength="32">
+						<p:ajax event="blur" update="firstNameGroup"/>
+					</p:inputText>
+					&#160;<h:message for="firstName" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="lastName" value="#{msg.last_name}"/>
+				</h:panelGroup>
+				<h:panelGroup>
+					<p:inputText id="lastName" value="#{registerController.account.lastName}" maxlength="32"/>
+					&#160;<h:message for="lastName" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="email" value="#{msg.email}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup id="emailGroup">
+					<p:inputText id="email" value="#{registerController.account.email}" maxlength="128" required="true" label="#{msg.email}">
+						<p:ajax event="blur" update="emailGroup"/>
+					</p:inputText> 
+					&#160;<h:message for="email" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="gender" value="#{msg.label_gender}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup>
+					<h:selectOneRadio style="font-size:12px;" id="gender" value="#{registerController.account.gender}">
+		  				<f:selectItem itemLabel="#{msg.label_male}" itemValue="M" />
+		  				<f:selectItem itemLabel="#{msg.label_female}" itemValue="F" />
+					</h:selectOneRadio>&#160;<h:message for="gender" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="password" value="#{msg.password}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup id="passwordGroup">
+					<p:password id="password" value="#{registerController.passwordBean.password}" required="true" label="#{msg.password}" maxlength="12">
+						<p:ajax event="blur" update="passwordGroup"/>
+					</p:password> 
+					&#160;<h:message for="password" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="verify" value="#{msg.verify_password}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup>
+					<p:password id="verify" value="#{registerController.passwordBean.verify}" required="true" label="#{msg.verify_password}" maxlength="12" feedback="false"/>
+					&#160;<h:message for="verify" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
+					<h:outputLabel for="captcha" value="#{msg.confirm_not_robot}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup>
+					<p:captcha id="captcha" label="#{msg.label_captcha}" publicKey="6LfPmsISAAAAACHv88mn6TOM3R14sVrnq4odyiSg" theme="white" required="true"
+						requiredMessage="#{msg.captcha_requried}" converterMessage="#{msg.captcha_conversion_fail}" validatorMessage="#{msg.captcha_validation_fail}"/>&#160;<h:message for="captcha" errorClass="errors"/>
+				</h:panelGroup>
+			
+			</h:panelGrid>
+			
+			<p:commandButton id="registerButton" ajax="false" value="#{msg.register}" action="signup" onclick="performSubmit(this.id)"/>&#160;or&#160;<h:commandLink value="#{msg.cancel}" action="cancel" immediate="true"/> 
+			
+		</p:panel>	
+		
+	</h:form>
+		
+ </ui:define>
+  
+</ui:composition>

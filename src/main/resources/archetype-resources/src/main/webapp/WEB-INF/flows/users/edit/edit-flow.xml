@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd"
+	parent="parent-flow">
+	
+	<persistence-context/>
+	
+	<on-start>
+		<evaluate expression="accountController.loadUserForEdit()" result="flowScope.account"/>
+	</on-start>
+	
+	<view-state id="edit">
+	    <secured attributes="ROLE_ADMIN"/>
+		<transition on="save" to="saveUser"/>
+		<transition on="cancel" to="cancelEdit">
+    		<evaluate expression="accountController.cancel()"/>            
+		</transition>
+	</view-state>
+	
+	<action-state id="saveUser">
+    	<evaluate expression="accountController.edit(flowScope.account)"/>   
+        <transition on="success" to="editComplete"/>
+        <transition on="failure" to="edit"/>
+    </action-state>
+    
+    <end-state id="cancelEdit" view="externalRedirect:servletRelative:/users"/> 
+    
+    <end-state id="editComplete" view="externalRedirect:servletRelative:/users?successUpdate=1"/>
+	
+</flow>
