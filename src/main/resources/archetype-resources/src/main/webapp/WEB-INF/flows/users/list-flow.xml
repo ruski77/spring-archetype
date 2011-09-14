@@ -6,6 +6,10 @@
 	
 	<persistence-context />
 	
+	<on-start>
+		<evaluate expression="accountController.loadAccounts()"/>
+	</on-start>
+	
 	<view-state id="list">
 		<secured attributes="ROLE_ADMIN"/>
 		

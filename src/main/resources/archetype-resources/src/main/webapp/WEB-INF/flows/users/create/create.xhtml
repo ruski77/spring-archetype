@@ -89,6 +89,17 @@
 				</h:panelGroup>
 				
 				<h:panelGroup>
+					<h:outputLabel for="status" value="#{msg.label_status}"/>&#160;<span class="required">*</span>
+				</h:panelGroup>
+				<h:panelGroup id="statusGroup">
+					<p:selectOneMenu id="status" required="true" value="#{flowScope.account.enabled}" label="#{msg.label_status}" effect="drop" requiredMessage="#{msg.status_required}">  
+                     	<f:selectItem itemLabel="#{msg.label_enabled}" itemValue="true" />  
+                     	<f:selectItem itemLabel="#{msg.label_disabled}" itemValue="false" />  
+                	</p:selectOneMenu>  
+                	&#160;<h:message for="status" errorClass="errors"/>
+				</h:panelGroup>
+				
+				<h:panelGroup>
 					<h:outputLabel for="password" value="#{msg.password}"/>&#160;<span class="required">*</span>
 				</h:panelGroup>
 				<h:panelGroup id="passwordGroup">
@@ -111,7 +122,7 @@
 				</h:panelGroup>
 				<h:panelGroup id="userRolesGroup" rendered="#{sec:areAllGranted('ROLE_ADMIN')}">
 					<p:pickList id="userRoles" value="#{accountController.roleNames}" var="roleName" itemLabel="${symbol_pound}{roleName}" required="true" 
-               				itemValue="#{roleName}" requiredMessage="#{msg.user_role_required}">
+               				itemValue="${symbol_pound}{roleName}" requiredMessage="#{msg.user_role_required}">
                			<f:facet name="add">  
            					<p:graphicImage value="/img/arrow_right.png" title="#{msg.label_add_role}"/>
         				</f:facet> 

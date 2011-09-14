@@ -138,7 +138,7 @@
 				</h:panelGroup>
 				<h:panelGroup id="userRolesGroup" rendered="#{sec:areAllGranted('ROLE_ADMIN')}">
 					<p:pickList id="userRoles" value="#{accountController.roleNames}" var="roleName" itemLabel="${symbol_pound}{roleName}" required="true" 
-               				itemValue="#{roleName}" requiredMessage="#{msg.user_role_required}">
+               				itemValue="${symbol_pound}{roleName}" requiredMessage="#{msg.user_role_required}">
                			<f:facet name="add">  
            					<p:graphicImage value="/img/arrow_right.png" title="#{msg.label_add_role}"/>
         				</f:facet> 

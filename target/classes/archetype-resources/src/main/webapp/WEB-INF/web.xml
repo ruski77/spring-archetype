@@ -62,6 +62,12 @@
       <param-value>server</param-value>
     </context-param>
 
+	<!-- jboss el expressions allow method params -->
+	<context-param>
+  		<param-name>com.sun.faces.expressionFactory</param-name>
+  		<param-value>org.jboss.el.ExpressionFactoryImpl</param-value>
+	</context-param>
+	
 	<!-- Just here so the JSF implementation can initialize, *not* used at runtime -->
 	<servlet>
 		<servlet-name>FacesServlet</servlet-name>

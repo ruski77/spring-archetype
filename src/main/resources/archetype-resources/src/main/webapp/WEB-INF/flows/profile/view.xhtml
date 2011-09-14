@@ -42,7 +42,7 @@
      				<td>
 	     				<p:fileUpload value="#{profileController.file}" mode="simple" rendered="#{flowScope.account.avatar == null}"/>  
 	     				<p:commandButton id="uploadPicButton" value="#{msg.label_upload_pic}" ajax="false" title="#{msg.tooltip_upload_pic}" 
-	                 					actionListener="#{profileController.uploadImage}" rendered="#{flowScope.account.avatar == null}"/> 
+	                 					actionListener="#{profileController.uploadImage}" rendered="#{flowScope.account.avatar == null}" onclick="displayLoadingGif()"/> 
 	                 	<p:tooltip for="uploadPicButton" showEffect="fade" hideEffect="fade"/>  
 	  				
 	     				<p:commandButton id="deletePicButton" value="#{msg.label_delete_picture}" title="#{msg.tooltip_delete_pic}" oncomplete="deleteConfirm.show()" rendered="#{flowScope.account.avatar != null}" style="width:150px;"/>

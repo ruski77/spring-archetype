@@ -27,7 +27,7 @@
 			paginator="true" rows="25" paginatorPosition="bottom" loadingMessage="#{msg.loading_data}" paginatorAlwaysVisible="false">
 		
 			<f:facet name="header">  
-		       	<h:outputText value="#{msg.label_user_list}"/>
+		       	<h:outputText value="#{msg.label_user_list}"/>&#160;(<h:outputText value="#{accountController.numberOfAccounts()}"/>)
          	</f:facet>  
          	
          	<p:column>  
